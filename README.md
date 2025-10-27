@@ -1,11 +1,22 @@
-# TTB Training Quiz — Multiplayer (Mobile-first)
+---
 
-Demo multiplayer quiz for bank/insurance training using Node.js + Socket.IO.
+### ✅ **3. กด “Commit changes”**
+- ใส่ข้อความสั้น ๆ เช่น  
+  `อัปเดต README ภาษาไทย พร้อมวิธีใช้งาน`
+- แล้วกดปุ่ม “Commit changes” เพื่อบันทึก
 
-## Quick start (local)
-```bash
-git clone <repo-url>
-cd ttb-training-quiz
-npm install
-npm start
-# Open http://localhost:3000
+---
+
+### ✅ **4. ตรวจสอบผล**
+กลับไปหน้าแรกของ GitHub repository  
+คุณจะเห็น README ใหม่ แสดงเป็นภาษาไทย สวยงาม อ่านง่าย และดูเป็นโปรเจกต์มืออาชีพทันที ✨
+
+---
+
+หากอาร์มต้องการ ผมสามารถช่วย  
+- ปรับ README ให้มี “โลโก้ / ปุ่มลิงก์ (Badge)” แบบ repo มืออาชีพ  
+หรือ  
+- สร้าง “หน้า Demo” สำหรับเข้าเล่นเกมจริงผ่าน GitHub Pages  
+
+ได้เลยครับ แค่บอกว่าอยากให้หน้าตาเป็นแบบไหน (เรียบ / สีสด / ธีม ttb)  
+จะได้ช่วยจัดโครงสร้างต่อให้พร้อมใช้งานจริงบนมือถือ 🚀
