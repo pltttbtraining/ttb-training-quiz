@@ -1,0 +1,347 @@
+<!-- public/index.html -->
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TTB Training Multiplayer Quiz</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+  body { font-family: 'Prompt', sans-serif; background: #f8fafc; }
+  .btn { @apply bg-blue-600 text-white px-4 py-2 rounded-lg; }
+</style>
+</head>
+<body class="p-4 max-w-md mx-auto">
+  <h1 class="text-2xl font-bold text-blue-700 mb-2">TTB Training Quiz — Multiplayer</h1>
+  <p class="text-sm text-gray-600 mb-4">Mobile-first | Host-control | Leaderboard</p>
+
+  <div id="entry" class="space-y-3 card bg-white p-4 rounded-xl shadow">
+    <div>
+      <label class="text-sm font-medium">ชื่อของคุณ</label>
+      <input id="nameInput" class="w-full border rounded p-2 mt-1" placeholder="เช่น นายนภัส / สมชาย"/>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="beHost" class="btn flex-1">เป็น Host (ผู้จัด)</button>
+      <button id="bePlayer" class="btn bg-green-600 flex-1">เข้าร่วม (Player)</button>
+    </div>
+  </div>
+
+  <!-- Host Panel -->
+  <div id="hostPanel" class="hidden space-y-3 mt-4">
+    <div class="card p-4">
+      <h2 class="font-bold">Host Control</h2>
+      <div class="mt-2">
+        <label class="text-sm">ห้องที่สร้าง: <span id="roomCodeDisplay" class="font-medium"></span></label>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm">เลือกผลิตภัณฑ์ (เลือกได้หลายรายการ)</label>
+        <div class="grid grid-cols-2 gap-2 mt-2">
+          <label><input type="checkbox" class="prodChk" value="Smart Bonus 10/5"/> Smart Bonus 10/5</label>
+          <label><input type="checkbox" class="prodChk" value="Happy Retire 90/5"/> Happy Retire 90/5</label>
+          <label><input type="checkbox" class="prodChk" value="Money Saver 14/6"/> Money Saver 14/6</label>
+          <label><input type="checkbox" class="prodChk" value="Global Index 15/5 Plus"/> Global Index 15/5 Plus</label>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-sm">เลือกระดับความยาก</label>
+        <select id="levelSelect" class="w-full border rounded p-2 mt-1">
+          <option value="1">Level 1 - มือใหม่</option>
+          <option value="2">Level 2 - วิเคราะห์</option>
+          <option value="3">Level 3 - Strategist</option>
+          <option value="4">Level 4 - Expert</option>
+        </select>
+      </div>
+
+      <div class="mt-3 flex gap-2">
+        <button id="saveSettings" class="btn flex-1">บันทึกการตั้งค่า</button>
+        <button id="startGame" class="btn bg-green-600 flex-1">เริ่มเกม</button>
+      </div>
+
+      <div class="mt-3">
+        <h3 class="font-semibold">ผู้เล่นที่เข้าร่วม</h3>
+        <ul id="playerList" class="text-sm mt-2 space-y-1"></ul>
+      </div>
+    </div>
+
+    <div id="questionArea" class="card hidden p-4">
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="text-sm text-gray-500">คำถามที่ <span id="qIndex"></span> / <span id="qTotal"></span></div>
+          <h3 id="qText" class="font-semibold mt-1"></h3>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-gray-500">เวลา</div>
+          <div id="hostTimer" class="text-lg font-bold text-red-600">--</div>
+        </div>
+      </div>
+      <div id="qOptions" class="mt-3 space-y-2"></div>
+
+      <div class="mt-3">
+        <button id="nextQ" class="btn">ถัดไป</button>
+        <button id="endGame" class="btn bg-red-600">จบเกม</button>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <h3 class="font-semibold">Leaderboard</h3>
+      <ol id="leaderboard" class="mt-2 space-y-1 text-sm"></ol>
+    </div>
+  </div>
+
+  <!-- Player Panel -->
+  <div id="playerPanel" class="hidden mt-4 space-y-3">
+    <div class="card p-4">
+      <div>
+        <label class="text-sm">รหัสห้อง 6 หลัก</label>
+        <input id="roomCodeInput" class="w-full border rounded p-2 mt-1" placeholder="พิมพ์รหัสห้องเพื่อเข้าร่วม"/>
+      </div>
+      <div class="mt-3">
+        <button id="joinRoomBtn" class="btn w-full">เข้าร่วม</button>
+      </div>
+    </div>
+
+    <div id="playerGame" class="card p-4 hidden">
+      <div class="text-sm text-gray-500">ห้อง: <span id="roomLabel"></span></div>
+      <div class="mt-2">
+        <div id="playerQIndex" class="text-xs text-gray-500"></div>
+        <h3 id="playerQText" class="font-semibold mt-1"></h3>
+      </div>
+
+      <div id="playerOptions" class="mt-3 space-y-2"></div>
+
+      <div class="mt-3">
+        <div id="playerTimer" class="text-right text-red-600 font-bold">--</div>
+      </div>
+
+      <div class="mt-3">
+        <div class="text-sm">คะแนนของคุณ: <span id="myScore">0</span></div>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <h3 class="font-semibold">Leaderboard</h3>
+      <ol id="playerLeaderboard" class="mt-2 text-sm"></ol>
+    </div>
+  </div>
+
+<script>
+  const socket = io();
+
+  // Elements
+  const nameInput = document.getElementById('nameInput');
+  const beHost = document.getElementById('beHost');
+  const bePlayer = document.getElementById('bePlayer');
+  const entry = document.getElementById('entry');
+
+  const hostPanel = document.getElementById('hostPanel');
+  const playerPanel = document.getElementById('playerPanel');
+
+  // Host elements
+  const roomCodeDisplay = document.getElementById('roomCodeDisplay');
+  const prodChks = document.querySelectorAll('.prodChk');
+  const levelSelect = document.getElementById('levelSelect');
+  const saveSettings = document.getElementById('saveSettings');
+  const startGameBtn = document.getElementById('startGame');
+  const playerList = document.getElementById('playerList');
+  const questionArea = document.getElementById('questionArea');
+  const qIndex = document.getElementById('qIndex');
+  const qTotal = document.getElementById('qTotal');
+  const qText = document.getElementById('qText');
+  const qOptions = document.getElementById('qOptions');
+  const hostTimer = document.getElementById('hostTimer');
+  const nextQ = document.getElementById('nextQ');
+  const endGame = document.getElementById('endGame');
+  const leaderboard = document.getElementById('leaderboard');
+
+  // Player elements
+  const roomCodeInput = document.getElementById('roomCodeInput');
+  const joinRoomBtn = document.getElementById('joinRoomBtn');
+  const playerGame = document.getElementById('playerGame');
+  const roomLabel = document.getElementById('roomLabel');
+  const playerQText = document.getElementById('playerQText');
+  const playerOptions = document.getElementById('playerOptions');
+  const playerTimer = document.getElementById('playerTimer');
+  const myScore = document.getElementById('myScore');
+  const playerLeaderboard = document.getElementById('playerLeaderboard');
+  const playerQIndex = document.getElementById('playerQIndex');
+
+  let myRoom = null;
+  let myIsHost = false;
+  let myName = '';
+
+  // Entry actions
+  beHost.onclick = () => {
+    myName = nameInput.value || 'Host';
+    socket.emit('createRoom', { hostName: myName });
+    entry.classList.add('hidden');
+  };
+  bePlayer.onclick = () => {
+    myName = nameInput.value || 'Player';
+    entry.classList.add('hidden');
+    playerPanel.classList.remove('hidden');
+  };
+
+  // Server responses
+  socket.on('roomCreated', ({ roomCode, hostName }) => {
+    myIsHost = true;
+    hostPanel.classList.remove('hidden');
+    document.getElementById('roomCodeDisplay').textContent = roomCode;
+    myRoom = roomCode;
+    // auto-join host to room
+    socket.emit('joinRoom', { roomCode, playerName: hostName });
+  });
+
+  socket.on('roomUpdate', ({ roomCode, hostName, players }) => {
+    // show players
+    playerList.innerHTML = '';
+    players.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = p.name + (p.score ? ` — ${p.score}` : '');
+      playerList.appendChild(li);
+    });
+  });
+
+  // Save settings
+  saveSettings.onclick = () => {
+    const selected = Array.from(prodChks).filter(c=>c.checked).map(c=>c.value);
+    const level = parseInt(levelSelect.value);
+    if (!myRoom) { alert('ยังไม่มีห้อง โปรดสร้างห้องก่อน'); return; }
+    socket.emit('setSettings', { roomCode: myRoom, products: selected, level });
+  };
+
+  socket.on('settingsSaved', ({ products, level, totalQuestions }) => {
+    alert(`ตั้งค่าเรียบร้อย: products=${products.join(', ')} | level=${level} | จำนวนคำถาม ${totalQuestions}`);
+  });
+
+  startGameBtn.onclick = () => {
+    if (!myRoom) return alert('ไม่มีห้อง');
+    socket.emit('startGame', { roomCode: myRoom });
+    questionArea.classList.remove('hidden');
+  };
+
+  // Host receives question
+  let hostCountdown;
+  socket.on('question', ({ qId, index, total, q, options, timer }) => {
+    qIndex.textContent = index;
+    qTotal.textContent = total;
+    qText.textContent = q;
+    qOptions.innerHTML = '';
+    options.forEach(opt => {
+      const d = document.createElement('div');
+      d.className = 'p-2 border rounded';
+      d.textContent = opt;
+      qOptions.appendChild(d);
+    });
+    // timer
+    let t = timer;
+    hostTimer.textContent = t;
+    clearInterval(hostCountdown);
+    hostCountdown = setInterval(()=> {
+      t--;
+      hostTimer.textContent = t;
+      if (t<=0) clearInterval(hostCountdown);
+    },1000);
+  });
+
+  nextQ.onclick = () => {
+    if (!myRoom) return;
+    socket.emit('nextQuestion', { roomCode: myRoom });
+  };
+
+  endGame.onclick = () => {
+    if (!myRoom) return;
+    socket.emit('endGame', { roomCode: myRoom });
+  };
+
+  // Player join
+  joinRoomBtn.onclick = () => {
+    const code = (roomCodeInput.value || '').trim().toUpperCase();
+    if (!code) return alert('ใส่รหัสห้องก่อน');
+    myName = nameInput.value || 'Player';
+    socket.emit('joinRoom', { roomCode: code, playerName: myName });
+    myRoom = code;
+    roomLabel.textContent = code;
+    playerGame.classList.remove('hidden');
+  };
+
+  // Player receives question
+  let currentQId = null;
+  let playerCountdown;
+  socket.on('question', ({ qId, index, total, q, options, timer }) => {
+    currentQId = qId;
+    playerQIndex.textContent = `คำถามที่ ${index} / ${total}`;
+    playerQText.textContent = q;
+    playerOptions.innerHTML = '';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn w-full text-left';
+      btn.textContent = opt;
+      btn.onclick = ()=> {
+        socket.emit('submitAnswer', { roomCode: myRoom, qId: currentQId, answer: opt });
+      };
+      playerOptions.appendChild(btn);
+    });
+
+    // timer
+    let t = timer;
+    playerTimer.textContent = t + ' วิ';
+    clearInterval(playerCountdown);
+    playerCountdown = setInterval(()=> {
+      t--;
+      playerTimer.textContent = t + ' วิ';
+      if (t<=0) clearInterval(playerCountdown);
+    },1000);
+  });
+
+  // answer result to player
+  socket.on('answerResult', ({ correct, correctAnswer }) => {
+    if (correct) {
+      alert('✅ ถูกต้อง! +100 คะแนน');
+    } else {
+      alert('❌ ผิด! คำตอบที่ถูกคือ: ' + correctAnswer);
+    }
+  });
+
+  // reveal event (after timer)
+  socket.on('reveal', ({ qId, correctAnswer, leaderboard: lb }) => {
+    // update leaderboard UI
+    updateLeaderboards(lb);
+  });
+
+  socket.on('leaderboard', ({ players }) => {
+    updateLeaderboards(players);
+  });
+
+  socket.on('gameEnded', ({ leaderboard: lb }) => {
+    alert('เกมจบแล้ว — ดูผลบน Leaderboard');
+    updateLeaderboards(lb);
+  });
+
+  socket.on('errorMsg', msg => alert(msg));
+
+  function updateLeaderboards(players) {
+    // host
+    leaderboard.innerHTML = '';
+    playerLeaderboard.innerHTML = '';
+    players.sort((a,b)=> (b.score||0)-(a.score||0));
+    players.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = `${p.name} — ${p.score||0}`;
+      leaderboard.appendChild(li);
+
+      const li2 = li.cloneNode(true);
+      playerLeaderboard.appendChild(li2);
+
+      // if my name match, update myScore
+      if (p.name === (nameInput.value || myName)) {
+        myScore.textContent = p.score || 0;
+      }
+    });
+  }
+</script>
+</body>
+</html>
