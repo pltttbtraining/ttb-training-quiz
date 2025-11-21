@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ScriptBox - Tax Conversation Toolkit (Prototype)</title>
+  <style>
+    :root{
+      /* Blue Gradient Version */
+      --grad-1: #E3F2FD; /* light */
+      --grad-2: #64B5F6; /* mid */
+      --grad-3: #1976D2; /* dark */
+      --accent: #42A5F5;
+      --text-primary: #0D2540;
+      --text-secondary: #5F6A7A;
+      --card-bg: #ffffff;
+      --muted-bg: #F6FAFF;
+      --divider: #E7ECF3;
+      --shadow: 0 10px 20px rgba(13,39,65,0.08);
+      --radius-card: 16px;
+      --radius-pill: 30px;
+      --gap: 16px;
+      font-family: "Inter", "Prompt", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      background: linear-gradient(180deg, var(--grad-1) 0%, #ffffff 35%);
+      color:var(--text-primary);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Container (mobile width) */
+    .app{
+      max-width:420px;
+      margin:0 auto;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      background:transparent;
+    }
+
+    header.app-header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:22px 20px;
+      background:linear-gradient(90deg,var(--grad-1), var(--grad-2));
+      border-bottom-left-radius:22px;
+      border-bottom-right-radius:22px;
+      color:#fff;
+      box-shadow: 0 6px 18px rgba(25,118,210,0.08);
+    }
+    header .logo{
+      width:44px;height:44px;border-radius:10px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.08);
+      font-weight:700;
+    }
+    header h1{font-size:18px;margin:0;line-height:1;}
+    header p{margin:0;font-size:12px;opacity:0.95}
+
+    main{
+      padding:18px 16px 90px;
+      flex:1 1 auto;
+    }
+
+    /* 3 Mode cards */
+    .modes{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .mode-card{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      background:var(--card-bg);
+      padding:16px;
+      border-radius:var(--radius-card);
+      box-shadow:var(--shadow);
+      border:1px solid var(--divider);
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .mode-card:hover{ transform: translateY(-3px); box-shadow:0 16px 30px rgba(13,39,65,0.08); }
+    .mode-icon{
+      min-width:46px;height:46px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg,var(--grad-1), #ffffff);
+      border:1px solid var(--divider);
+      color:var(--grad-3);
+      font-size:20px;
+    }
+    .mode-body h3{ margin:0; font-size:16px; color:var(--text-primary); }
+    .mode-body p{ margin:6px 0 0; font-size:13px; color:var(--text-secondary); line-height:1.4; }
+
+    /* Quick Start */
+    .section-title{
+      margin:18px 4px 8px;
+      font-weight:600;
+      font-size:18px;
+    }
+    .quick-start{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      background:var(--muted-bg);
+      border-radius:var(--radius-pill);
+      color:var(--grad-3);
+      font-weight:600;
+      font-size:14px;
+      border:1px solid var(--divider);
+      cursor:pointer;
+    }
+
+    /* Scenarios */
+    .scenarios{
+      margin-top:18px;
+    }
+    .sc-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    .sc-card{
+      background:var(--card-bg);
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--divider);
+      color:var(--text-primary);
+      font-size:14px;
+      box-shadow: 0 6px 14px rgba(13,39,65,0.04);
+      cursor:pointer;
+    }
+
+    /* Slide-in view for mode details */
+    .mode-panel{
+      position:fixed;
+      top:0;right:-100%;
+      width:100%;
+      max-width:420px;
+      height:100%;
+      background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 30%);
+      box-shadow: -20px 0 40px rgba(13,39,65,0.08);
+      transition:right .28s cubic-bezier(.2,.9,.2,1);
+      z-index:90;
+      overflow:auto;
+      padding:20px;
+    }
+    .mode-panel.open{ right:0; }
+    .panel-close{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;margin-bottom:12px;
+    }
+    .panel-close button{
+      background:var(--grad-3);color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;
+    }
+    .script-block{
+      background:#fff;border-radius:12px;padding:14px;margin:8px 0;border:1px solid var(--divider);
+      box-shadow:0 8px 16px rgba(13,39,65,0.04);
+    }
+    .script-block p{ margin:0;color:var(--text-secondary);line-height:1.5; }
+
+    /* Bottom navigation */
+    .bottom-nav{
+      position:fixed;left:0;right:0;bottom:0;
+      display:flex;justify-content:space-around;align-items:center;
+      background:rgba(255,255,255,0.98);padding:8px 8px;border-top:1px solid var(--divider);
+      box-shadow:0 -6px 20px rgba(13,39,65,0.03);
+      z-index:100;
+    }
+    .nav-item{ display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--grad-3);font-size:12px;cursor:pointer; }
+    .nav-item.active{ color:var(--grad-3); font-weight:700; }
+
+    /* Bottom sheet (Quick Action modal) */
+    .sheet{
+      position:fixed;left:0;right:0;bottom:-100%;
+      background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 10%);
+      border-top-left-radius:18px;border-top-right-radius:18px;
+      box-shadow:0 -18px 40px rgba(13,39,65,0.12);
+      padding:18px;
+      transition: bottom .26s cubic-bezier(.2,.9,.2,1);
+      z-index:120;
+    }
+    .sheet.open{ bottom:0; }
+    .sheet .sheet-row{ display:flex;gap:10px;flex-wrap:wrap; }
+    .sheet .sheet-action{ padding:12px 14px;border-radius:12px;background:var(--muted-bg); border:1px solid var(--divider); cursor:pointer; font-weight:600; color:var(--grad-3); }
+
+    /* Responsive tweaks */
+    @media(min-width:600px){
+      main{ padding:28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="ScriptBox Tax Conversation Toolkit">
+    <header class="app-header" role="banner">
+      <!-- example local logo (use your uploaded mockup path) -->
+      <div class="logo" aria-hidden="true">
+        <img src="/mnt/data/A_mockup_of_a_mobile_app_interface_named_%22ScriptBo.png" alt="ScriptBox" style="width:28px;height:28px;object-fit:cover;border-radius:6px;">
+      </div>
+      <div>
+        <h1>ScriptBox</h1>
+        <p>Tax Conversation Toolkit</p>
+      </div>
+      <div style="margin-left:auto;">
+        <button aria-label="เปลี่ยนภาษา" style="background:transparent;border:0;color:#fff;font-weight:700;cursor:pointer">EN/TH</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Modes -->
+      <section class="modes" aria-label="เลือกโหมด">
+        <div class="mode-card" data-mode="minimal" tabindex="0" role="button" aria-pressed="false">
+          <div class="mode-icon">📘</div>
+          <div class="mode-body">
+            <h3>Minimal Pro Banking</h3>
+            <p>อ่านแบบคู่มือ เหมาะสำหรับเตรียมตัวหรือใช้กับลูกค้าที่ต้องการข้อมูลเชิงลึก</p>
+          </div>
+        </div>
+
+        <div class="mode-card" data-mode="conversation" tabindex="0" role="button" aria-pressed="false">
+          <div class="mode-icon">💬</div>
+          <div class="mode-body">
+            <h3>Conversation Studio</h3>
+            <p>บทสนทนาแบบแชท พร้อมประโยคให้พูดทันที เหมาะใช้ระหว่างคุยกับลูกค้า</p>
+          </div>
+        </div>
+
+        <div class="mode-card" data-mode="library" tabindex="0" role="button" aria-pressed="false">
+          <div class="mode-icon">🗂️</div>
+          <div class="mode-body">
+            <h3>Card Library</h3>
+            <p>ค้นหาสคริปต์ด้วยตัวกรองสำหรับสถานการณ์เฉพาะ ใช้ง่ายและรวดเร็ว</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Start -->
+      <h2 class="section-title">อยากเริ่มจากอะไรดี?</h2>
+      <div class="quick-start" role="list">
+        <div class="chip" data-action="hook" role="button" tabindex="0">😊 เริ่มเปิดบทสนทนา (Hook)</div>
+        <div class="chip" data-action="objection" role="button" tabindex="0">👍 ตอบข้อโต้แย้งยอดฮิต</div>
+        <div class="chip" data-action="tax" role="button" tabindex="0">📘 อธิบายสิทธิ์ลดหย่อนภาษี</div>
+        <div class="chip" data-action="wow" role="button" tabindex="0">✨ สรุปแบบ WOW ภายใน 30 วินาที</div>
+      </div>
+
+      <!-- Frequently encountered scenarios -->
+      <div class="scenarios" aria-label="สถานการณ์ที่พบบ่อย">
+        <h3 class="section-title" style="margin-top:22px">สถานการณ์ที่เจอบ่อยที่สุด</h3>
+        <div class="sc-grid">
+          <div class="sc-card" data-scenario="unsure" tabindex="0">ลูกค้าบอกว่า "ยังไม่แน่ใจ"</div>
+          <div class="sc-card" data-scenario="longterm" tabindex="0">ลูกค้าบอกว่า "10 ปีนานไป"</div>
+          <div class="sc-card" data-scenario="think" tabindex="0">ลูกค้าบอกว่า "เดี๋ยวก่อน"</div>
+          <div class="sc-card" data-scenario="taxfull" tabindex="0">ลูกค้าบอกว่า "ภาษีเต็มแล้ว"</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Slide-in panel for mode details -->
+    <aside id="modePanel" class="mode-panel" aria-hidden="true" role="dialog" aria-label="รายละเอียดโหมด">
+      <div class="panel-close">
+        <div>
+          <strong id="panelTitle">Mode</strong>
+          <div style="font-size:13px;color:var(--text-secondary);">ตัวอย่างสคริปต์และขั้นตอน</div>
+        </div>
+        <div>
+          <button id="closePanel">ปิด</button>
+        </div>
+      </div>
+
+      <div id="panelContent">
+        <!-- Dynamic content injected by JS -->
+      </div>
+    </aside>
+
+    <!-- Quick Action bottom sheet -->
+    <div id="sheet" class="sheet" aria-hidden="true" role="dialog" aria-label="Quick Actions">
+      <div style="display:flex;justify-content:center;align-items:center;margin-bottom:12px;">
+        <div style="width:40px;height:4px;background:var(--divider);border-radius:4px;"></div>
+      </div>
+      <div style="font-weight:700;margin-bottom:8px;">Quick Actions</div>
+      <div class="sheet-row">
+        <div class="sheet-action" data-action="hook">เริ่มการสนทนา (Hook)</div>
+        <div class="sheet-action" data-action="objection">ตอบข้อโต้แย้ง</div>
+        <div class="sheet-action" data-action="tax">อธิบายสิทธิ์ลดหย่อน</div>
+        <div class="sheet-action" data-action="wow">สรุปแบบ WOW</div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+
+    <!-- bottom nav -->
+    <nav class="bottom-nav" role="navigation" aria-label="เมนูล่าง">
+      <div class="nav-item active" data-nav="guide">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 2h9a2 2 0 012 2v15" stroke="#1976D2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        คู่มือ
+      </div>
+      <div class="nav-item" data-nav="contact">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM3 21v-1a4 4 0 014-4h10a4 4 0 014 4v1" stroke="#1976D2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ติดต่อ
+      </div>
+      <div class="nav-item" data-nav="version">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="2" stroke="#1976D2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        เวอร์ชัน
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    /* Minimal JS to enable mode switching, panel, sheet, and quick actions */
+    (function(){
+      const modeCards = document.querySelectorAll('.mode-card');
+      const panel = document.getElementById('modePanel');
+      const panelTitle = document.getElementById('panelTitle');
+      const panelContent = document.getElementById('panelContent');
+      const closePanelBtn = document.getElementById('closePanel');
+      const sheet = document.getElementById('sheet');
+
+      const sampleScripts = {
+        minimal: {
+          title: 'Minimal Pro Banking',
+          desc: 'คู่มือแบบเป็นขั้นตอน เหมาะสำหรับอธิบายตัวเลขและข้อมูลเชิงเทคนิค',
+          scripts: [
+            {title:'Phase 1: The Hook', text:'สวัสดีครับ/ค่ะ ผมแค่ขอเวลาสั้นๆ เพื่อทบทวนสิทธิ์ลดหย่อนภาษีของคุณ...'},
+            {title:'Phase 2: ประโยชน์', text:'ถ้าลงทุน 100,000 บาท จะได้สิทธิ์ลดหย่อนภาษีสูงสุด X บาท...'},
+            {title:'Phase 3: WOW Summary', text:'สรุปปีแรกได้กลับมา 30,000 บาท (ตัวอย่าง)'}
+          ]
+        },
+        conversation: {
+          title: 'Conversation Studio',
+          desc: 'บทสนทนาแบบ bubble พร้อมประโยคให้พูดทันที ใช้ตอนคุยกับลูกค้า',
+          scripts: [
+            {title:'เปิดบทสนทนา (Hook)', text:'“สวัสดีครับ/ค่ะ คุณ [ชื่อ]...ช่วงปลายปีมีช่องทางช่วยลดภาษีอยู่ครับ อยากให้ผมช่วยเช็กตัวเลขให้มั้ยครับ?”'},
+            {title:'ตอบข้อโต้แย้ง', text:'“เข้าใจครับ แต่ถ้าให้ผมลองคำนวณตามตัวเลขจริง อาจเห็นภาพชัดขึ้นเลยครับ”'}
+          ]
+        },
+        library: {
+          title: 'Card Library',
+          desc: 'หาสคริปต์ตามสถานการณ์ เลือกการ์ดแล้วกดคัดลอกไปใช้',
+          scripts: [
+            {title:'ข้อโต้แย้ง: 10 ปีนานไป', text:'“ผมเข้าใจครับ แต่ลองมองเป็นการกระจายการลงทุน แล้วเราจะเห็นผลระยะยาว…”'},
+            {title:'ข้อโต้แย้ง: ภาษีเต็มแล้ว', text:'“ถ้าภาษีเต็ม ยังมีช่องทางอื่นที่ช่วยได้เล็กน้อย เช่น…”'}
+          ]
+        }
+      };
+
+      function openPanel(modeKey){
+        const mode = sampleScripts[modeKey];
+        if(!mode) return;
+        panelTitle.textContent = mode.title;
+        panelContent.innerHTML = `
+          <div style="color:var(--text-secondary);margin-bottom:10px">${mode.desc}</div>
+          ${mode.scripts.map(s => `
+            <div class="script-block" tabindex="0">
+              <strong>${s.title}</strong>
+              <p>${s.text}</p>
+              <div style="margin-top:10px;display:flex;gap:8px">
+                <button onclick="copyText(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--grad-2),var(--grad-3));color:#fff;cursor:pointer">คัดลอก</button>
+                <button onclick="useScript(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:1px solid var(--divider);background:#fff;cursor:pointer">ใช้เลย</button>
+              </div>
+            </div>
+          `).join('')}
+        `;
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden','false');
+      }
+
+      modeCards.forEach(card=>{
+        card.addEventListener('click', ()=> {
+          const mode = card.dataset.mode;
+          openPanel(mode);
+        });
+        card.addEventListener('keydown', (e)=> {
+          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+        });
+      });
+
+      closePanelBtn.addEventListener('click', ()=>{
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden','true');
+      });
+
+      // Quick start sheet
+      const chips = document.querySelectorAll('.chip');
+      chips.forEach(c=>{
+        c.addEventListener('click', ()=> {
+          // open bottom sheet
+          sheet.classList.add('open');
+          sheet.setAttribute('aria-hidden','false');
+        });
+      });
+
+      // sheet actions
+      document.querySelectorAll('.sheet-action').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const action = btn.dataset.action;
+          sheet.classList.remove('open');
+          sheet.setAttribute('aria-hidden','true');
+          // auto open relevant mode panel
+          if(action === 'hook') openPanel('conversation');
+          else if(action === 'objection') openPanel('library');
+          else openPanel('minimal');
+        });
+      });
+
+      // close sheet on tap outside (simple)
+      document.addEventListener('click', (e)=>{
+        if(sheet.classList.contains('open')){
+          const rect = sheet.getBoundingClientRect();
+          if(e.clientY < rect.top - 10) {
+            sheet.classList.remove('open');
+            sheet.setAttribute('aria-hidden','true');
+          }
+        }
+      });
+
+      // scenario cards open library mode with filtered content
+      document.querySelectorAll('.sc-card').forEach(card=>{
+        card.addEventListener('click', ()=>{
+          openPanel('library');
+          // optionally, scroll to matched script in panel after open
+        });
+      });
+
+      // bottom nav interactions (example)
+      document.querySelectorAll('.nav-item').forEach(item=>{
+        item.addEventListener('click', ()=>{
+          document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+          item.classList.add('active');
+          // can route to sections; for now, focus home
+          if(item.dataset.nav === 'contact') alert('ติดต่อเทรนนิ่ง / ส่งอีเมลตัวอย่าง (demo)');
+          if(item.dataset.nav === 'version') alert('เวอร์ชันระบบ: prototype');
+        });
+      });
+
+      // small global helpers exposed
+      window.copyText = function(text){
+        navigator.clipboard?.writeText(text).then(()=> {
+          alert('คัดลอกสคริปต์เรียบร้อย');
+        }).catch(()=> alert('ไม่สามารถคัดลอกได้'));
+      };
+      window.useScript = function(text){
+        // example: paste to clipboard and show a friendly hint
+        navigator.clipboard?.writeText(text).then(()=> {
+          alert('วางสคริปต์ลงในช่องแช็ตของคุณได้เลย (คัดลอกเรียบร้อย)');
+        }).catch(()=> alert('ไม่สามารถคัดลอกได้'));
+      };
+
+      // keyboard accessibility: Escape closes panel/sheet
+      document.addEventListener('keydown', (e)=> {
+        if(e.key === 'Escape'){
+          if(panel.classList.contains('open')) { panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); }
+          if(sheet.classList.contains('open')) { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
