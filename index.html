@@ -32,7 +32,6 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Container (mobile width) */
     .app{
       max-width:420px;
       margin:0 auto;
@@ -64,151 +63,90 @@
     header p{margin:0;font-size:12px;opacity:0.95}
 
     main{
-      padding:18px 16px 90px;
+      padding:18px 16px 120px;
       flex:1 1 auto;
     }
 
-    /* 3 Mode cards */
-    .modes{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-bottom:18px;
+    .search-row{
+      display:flex;gap:10px;align-items:center;margin-bottom:14px;
     }
-    .mode-card{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
+    .search-input{
+      flex:1;
       background:var(--card-bg);
-      padding:16px;
-      border-radius:var(--radius-card);
+      padding:12px 14px;border-radius:12px;border:1px solid var(--divider);
       box-shadow:var(--shadow);
-      border:1px solid var(--divider);
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease;
+      font-size:14px;
     }
+    .persona-filters{
+      display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;
+    }
+    .persona-chip{
+      padding:8px 12px;border-radius:20px;background:var(--muted-bg);border:1px solid var(--divider);
+      cursor:pointer;font-weight:700;color:var(--grad-3);
+    }
+    .persona-chip.active{
+      background:linear-gradient(90deg,var(--grad-2),var(--grad-3));
+      color:#fff;border:1px solid rgba(255,255,255,0.06);
+      box-shadow:0 8px 18px rgba(25,118,210,0.12);
+    }
+
+    .modes{ display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+    .mode-card{ display:flex; gap:12px; align-items:flex-start; background:var(--card-bg); padding:16px; border-radius:var(--radius-card); box-shadow:var(--shadow); border:1px solid var(--divider); cursor:pointer; transition:transform .18s ease, box-shadow .18s ease; }
     .mode-card:hover{ transform: translateY(-3px); box-shadow:0 16px 30px rgba(13,39,65,0.08); }
-    .mode-icon{
-      min-width:46px;height:46px;border-radius:10px;
-      display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(180deg,var(--grad-1), #ffffff);
-      border:1px solid var(--divider);
-      color:var(--grad-3);
-      font-size:20px;
-    }
+    .mode-icon{ min-width:46px;height:46px;border-radius:10px; display:flex;align-items:center;justify-content:center; background:linear-gradient(180deg,var(--grad-1), #ffffff); border:1px solid var(--divider); color:var(--grad-3); font-size:20px; }
     .mode-body h3{ margin:0; font-size:16px; color:var(--text-primary); }
     .mode-body p{ margin:6px 0 0; font-size:13px; color:var(--text-secondary); line-height:1.4; }
 
-    /* Quick Start */
-    .section-title{
-      margin:18px 4px 8px;
-      font-weight:600;
-      font-size:18px;
-    }
-    .quick-start{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:12px;
-      background:var(--muted-bg);
-      border-radius:var(--radius-pill);
-      color:var(--grad-3);
-      font-weight:600;
-      font-size:14px;
-      border:1px solid var(--divider);
-      cursor:pointer;
-    }
+    .section-title{ margin:18px 4px 8px; font-weight:600; font-size:18px; }
 
-    /* Scenarios */
-    .scenarios{
+    .quick-start{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .chip{ display:inline-flex; align-items:center; gap:10px; padding:12px; background:var(--muted-bg); border-radius:var(--radius-pill); color:var(--grad-3); font-weight:600; font-size:14px; border:1px solid var(--divider); cursor:pointer; }
+
+    .scenarios{ margin-top:18px; }
+    .sc-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .sc-card{ background:var(--card-bg); padding:12px; border-radius:12px; border:1px solid var(--divider); color:var(--text-primary); font-size:14px; box-shadow: 0 6px 14px rgba(13,39,65,0.04); cursor:pointer; }
+
+    /* result list (search or persona) */
+    .results{
       margin-top:18px;
-    }
-    .sc-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
+      display:flex;
+      flex-direction:column;
       gap:10px;
     }
-    .sc-card{
+    .result-item{
       background:var(--card-bg);
-      padding:12px;
-      border-radius:12px;
-      border:1px solid var(--divider);
-      color:var(--text-primary);
-      font-size:14px;
-      box-shadow: 0 6px 14px rgba(13,39,65,0.04);
-      cursor:pointer;
+      padding:12px;border-radius:12px;border:1px solid var(--divider);
+      box-shadow:0 6px 14px rgba(13,39,65,0.04);
     }
+    .result-item h4{margin:0 0 6px 0;}
+    .tag{ display:inline-block;padding:6px 8px;border-radius:10px;background:var(--muted-bg);font-size:12px;margin-right:6px;color:var(--grad-3); }
 
-    /* Slide-in view for mode details */
-    .mode-panel{
-      position:fixed;
-      top:0;right:-100%;
-      width:100%;
-      max-width:420px;
-      height:100%;
-      background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 30%);
-      box-shadow: -20px 0 40px rgba(13,39,65,0.08);
-      transition:right .28s cubic-bezier(.2,.9,.2,1);
-      z-index:90;
-      overflow:auto;
-      padding:20px;
-    }
+    /* mode panel */
+    .mode-panel{ position:fixed; top:0; right:-100%; width:100%; max-width:420px; height:100%; background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 30%); box-shadow:-20px 0 40px rgba(13,39,65,0.08); transition:right .28s cubic-bezier(.2,.9,.2,1); z-index:90; overflow:auto; padding:20px;}
     .mode-panel.open{ right:0; }
-    .panel-close{
-      display:flex;justify-content:space-between;align-items:center;
-      gap:12px;margin-bottom:12px;
-    }
-    .panel-close button{
-      background:var(--grad-3);color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;
-    }
-    .script-block{
-      background:#fff;border-radius:12px;padding:14px;margin:8px 0;border:1px solid var(--divider);
-      box-shadow:0 8px 16px rgba(13,39,65,0.04);
-    }
-    .script-block p{ margin:0;color:var(--text-secondary);line-height:1.5; }
+    .panel-close{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    .panel-close button{ background:var(--grad-3); color:#fff; border:0; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    .script-block{ background:#fff; border-radius:12px; padding:14px; margin:8px 0; border:1px solid var(--divider); box-shadow:0 8px 16px rgba(13,39,65,0.04); }
+    .script-block p{ margin:0; color:var(--text-secondary); line-height:1.5; }
 
-    /* Bottom navigation */
-    .bottom-nav{
-      position:fixed;left:0;right:0;bottom:0;
-      display:flex;justify-content:space-around;align-items:center;
-      background:rgba(255,255,255,0.98);padding:8px 8px;border-top:1px solid var(--divider);
-      box-shadow:0 -6px 20px rgba(13,39,65,0.03);
-      z-index:100;
-    }
-    .nav-item{ display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--grad-3);font-size:12px;cursor:pointer; }
+    .bottom-nav{ position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:space-around; align-items:center; background:rgba(255,255,255,0.98); padding:8px 8px; border-top:1px solid var(--divider); box-shadow:0 -6px 20px rgba(13,39,65,0.03); z-index:100; }
+    .nav-item{ display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--grad-3); font-size:12px; cursor:pointer; }
     .nav-item.active{ color:var(--grad-3); font-weight:700; }
 
-    /* Bottom sheet (Quick Action modal) */
-    .sheet{
-      position:fixed;left:0;right:0;bottom:-100%;
-      background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 10%);
-      border-top-left-radius:18px;border-top-right-radius:18px;
-      box-shadow:0 -18px 40px rgba(13,39,65,0.12);
-      padding:18px;
-      transition: bottom .26s cubic-bezier(.2,.9,.2,1);
-      z-index:120;
-    }
+    .sheet{ position:fixed; left:0; right:0; bottom:-100%; background:linear-gradient(180deg,#ffffff 0%, #F7FBFF 10%); border-top-left-radius:18px; border-top-right-radius:18px; box-shadow:0 -18px 40px rgba(13,39,65,0.12); padding:18px; transition: bottom .26s cubic-bezier(.2,.9,.2,1); z-index:120; }
     .sheet.open{ bottom:0; }
-    .sheet .sheet-row{ display:flex;gap:10px;flex-wrap:wrap; }
-    .sheet .sheet-action{ padding:12px 14px;border-radius:12px;background:var(--muted-bg); border:1px solid var(--divider); cursor:pointer; font-weight:600; color:var(--grad-3); }
+    .sheet .sheet-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .sheet .sheet-action{ padding:12px 14px; border-radius:12px; background:var(--muted-bg); border:1px solid var(--divider); cursor:pointer; font-weight:600; color:var(--grad-3); }
 
-    /* Responsive tweaks */
-    @media(min-width:600px){
-      main{ padding:28px; }
-    }
+    @media(min-width:600px){ main{ padding:28px; } }
   </style>
 </head>
 <body>
   <div class="app" role="application" aria-label="ScriptBox Tax Conversation Toolkit">
     <header class="app-header" role="banner">
-      <!-- example local logo (use your uploaded mockup path) -->
       <div class="logo" aria-hidden="true">
-        <img src="/mnt/data/A_mockup_of_a_mobile_app_interface_named_%22ScriptBo.png" alt="ScriptBox" style="width:28px;height:28px;object-fit:cover;border-radius:6px;">
+        <!-- Local mockup image path (use this local path) -->
+        <img src="/mnt/data/A_mockup_of_a_mobile_app_interface_named_%22ScriptBo.png" alt="ScriptBox" style="width:32px;height:32px;object-fit:cover;border-radius:6px;">
       </div>
       <div>
         <h1>ScriptBox</h1>
@@ -220,13 +158,31 @@
     </header>
 
     <main>
+      <!-- Search + persona filters -->
+      <div class="search-row">
+        <input id="searchInput" class="search-input" placeholder="ค้นหาสคริปต์ (พิมพ์คำ, ตัวอย่าง: 10 ปี, ภาษี, ไม่แน่ใจ)" />
+        <button id="clearSearch" title="ล้าง" style="border:0;background:var(--grad-3);color:#fff;padding:10px 12px;border-radius:10px;cursor:pointer">ค้นหา</button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-weight:700;">Persona</div>
+        <div style="font-size:13px;color:var(--text-secondary);">กรองตามสไตล์ลูกค้า</div>
+      </div>
+      <div class="persona-filters" role="toolbar" aria-label="Persona filters">
+        <div class="persona-chip" data-persona="D">D - เป้าประสงค์</div>
+        <div class="persona-chip" data-persona="I">I - หนึ่งดารา</div>
+        <div class="persona-chip" data-persona="S">S - ถนอมจิต</div>
+        <div class="persona-chip" data-persona="C">C - คิดคำนวณ</div>
+        <div class="persona-chip" data-persona="all">ทั้งหมด</div>
+      </div>
+
       <!-- Modes -->
       <section class="modes" aria-label="เลือกโหมด">
         <div class="mode-card" data-mode="minimal" tabindex="0" role="button" aria-pressed="false">
           <div class="mode-icon">📘</div>
           <div class="mode-body">
             <h3>Minimal Pro Banking</h3>
-            <p>อ่านแบบคู่มือ เหมาะสำหรับเตรียมตัวหรือใช้กับลูกค้าที่ต้องการข้อมูลเชิงลึก</p>
+            <p>คู่มือเป็นขั้นตอน — เหมาะกับการเตรียมข้อมูลและอธิบายเชิงตัวเลข</p>
           </div>
         </div>
 
@@ -234,7 +190,7 @@
           <div class="mode-icon">💬</div>
           <div class="mode-body">
             <h3>Conversation Studio</h3>
-            <p>บทสนทนาแบบแชท พร้อมประโยคให้พูดทันที เหมาะใช้ระหว่างคุยกับลูกค้า</p>
+            <p>บทสนทนาแบบแชท — ประโยคพร้อมพูด เหมาะใช้ระหว่างคุยกับลูกค้า</p>
           </div>
         </div>
 
@@ -242,7 +198,7 @@
           <div class="mode-icon">🗂️</div>
           <div class="mode-body">
             <h3>Card Library</h3>
-            <p>ค้นหาสคริปต์ด้วยตัวกรองสำหรับสถานการณ์เฉพาะ ใช้ง่ายและรวดเร็ว</p>
+            <p>หาการ์ดตามสถานการณ์หรือ persona — ใช้ได้เร็วในสนาม</p>
           </div>
         </div>
       </section>
@@ -266,6 +222,9 @@
           <div class="sc-card" data-scenario="taxfull" tabindex="0">ลูกค้าบอกว่า "ภาษีเต็มแล้ว"</div>
         </div>
       </div>
+
+      <!-- Results area (search & persona filtered) -->
+      <div id="results" class="results" aria-live="polite"></div>
     </main>
 
     <!-- Slide-in panel for mode details -->
@@ -318,84 +277,168 @@
   </div>
 
   <script>
-    /* Minimal JS to enable mode switching, panel, sheet, and quick actions */
     (function(){
+
+      // ---------- Data: expanded scripts + persona mapping ----------
+      // persona: D / I / S / C
+      const data = [
+        { id:1, title:'Hook - เปิดประเด็นภาษีแบบเนียน', text:'สวัสดีครับ/ค่ะ คุณ [ชื่อ]... ช่วงปลายปีมีช่องทางช่วยลดภาษีอยู่ครับ อยากให้ผมช่วยเช็กตัวเลขให้มั้ยครับ?', personas:['I','S'] , tags:['hook','start'] },
+        { id:2, title:'ตอบข้อโต้แย้ง - 10 ปีนานไป', text:'ผมเข้าใจครับ แต่ลองมองเป็นการกระจายการลงทุน: ถามว่าเป้าหมายของคุณคืออะไรใน 10 ปี? ถ้าเน้นลดหย่อนภาษีเรามีตัวเลือกที่ยืดหยุ่น', personas:['C','D'], tags:['objection','longterm'] },
+        { id:3, title:'ตอบข้อโต้แย้ง - ภาษีเต็มแล้ว', text:'ถ้าภาษีเต็มแล้ว แนะนำตรวจช่องทางอื่น เช่น ประกันสะสมทรัพย์บางแบบ หรือใช้ชื่อภรรยา/คู่สมรส (ถ้ามี) เพื่อกระจายสิทธิ์', personas:['C','S'], tags:['objection','taxfull'] },
+        { id:4, title:'สรุป WOW แบบเร็ว', text:'สรุปง่ายๆ ปีแรกคุณจะได้ประโยชน์ตอบกลับประมาณ 30,000 บาท (ตัวอย่าง) — ถ้าสนใจ ผมช่วยคำนวณให้ละเอียดตอนนี้เลยครับ', personas:['I','D'], tags:['wow','summary'] },
+        { id:5, title:'Hook - ชวนคุยแบบเป็นมิตร', text:'ผมเห็นว่ามีรายการหักภาษีที่หลายคนมองข้าม อยากให้ผมลองคำนวณให้แบบเร็ว ๆ ดูไหมครับ?', personas:['S','I'], tags:['hook'] },
+        { id:6, title:'ตอบข้อโต้แย้ง - ขอกลับบ้านคิดก่อน', text:'เข้าใจครับ ถ้าสะดวก ผมส่งตัวอย่างการคำนวณไปให้ทางแอป/อีเมล แล้วเดี๋ยวผมติดตามผลอีกครั้งได้ไหมครับ?', personas:['S'], tags:['objection','think'] },
+        { id:7, title:'อธิบายสิทธิ์ลดหย่อน (ตัวเลข)', text:'ถ้าลงทุน 100,000 บาท ปกติจะลดหย่อนได้สูงสุด 100,000 และลดหย่อนภาษีจริง (ตัวอย่าง) ประมาณ 20% ของยอดที่ลงทุน', personas:['C','D'], tags:['tax','numbers'] },
+        { id:8, title:'เทคนิคปิดแบบนุ่ม (Soft close)', text:'จากที่พูดมาผมสรุปให้ว่า ถ้าต้องการผมสามารถจองสิทธิ์ให้ตอนนี้ได้เลย หรือผมช่วยนัดคิวเพื่อคุยลึกขึ้นสั้น ๆ ได้ครับ', personas:['I','S'], tags:['close'] },
+        { id:9, title:'กรณีลูกค้าอายุน้อย ต้องการผลตอบแทน', text:'สำหรับลูกค้าที่ต้องการผลตอบแทน ระยะยาว เราแนะนำแบบที่ผสมการลงทุนและความคุ้มครอง ซึ่งยังให้สิทธิ์ลดหย่อน', personas:['D','C'], tags:['case','young'] },
+        { id:10, title:'กรณีลูกค้ารายได้คงที่ ต้องการความมั่นคง', text:'ถ้ารายได้คงที่ แนะนำแผนที่มีเบี้ยสม่ำเสมอและคุ้มครองชัดเจนพร้อมสิทธิ์ลดหย่อน เพื่อความสบายใจ', personas:['S'], tags:['case','stable'] },
+        { id:11, title:'ตอบข้อโต้แย้ง - ผลตอบแทนน้อย', text:'จุดแข็งของแผนนี้คือการรับประกันบางส่วนและสิทธิ์ลดหย่อนภาษี ซึ่งช่วยลดภาษีที่ต้องจ่ายจริงๆ ในปีนั้น ๆ', personas:['C','D'], tags:['objection','return'] },
+        { id:12, title:'Hook - เอาตัวเลขจริงมาดูกัน', text:'ถ้าให้ผมใส่ตัวเลขจริงของคุณ ผมจะคำนวณให้เห็นภาพเลย — จะช่วยให้ตัดสินใจง่ายขึ้น', personas:['C','I'], tags:['hook','calculate'] },
+        { id:13, title:'สคริปต์สำหรับลูกค้าที่ระมัดระวัง', text:'ผมเข้าใจว่าคุณอยากมั่นใจก่อนลงมือ เราลองเริ่มจากแผนที่มีความคุ้มครองสูงและเบี้ยคงที่ก่อน แล้วค่อยปรับทีหลังได้', personas:['S','C'], tags:['case','cautious'] },
+        { id:14, title:'แนวทางเสนอแบบ D (เน้นผลลัพธ์)', text:'สรุปสั้น ๆ: ลงทุน X จะได้สิทธิ์ลดหย่อน Y, ผลตอบแทนคาดการณ์ Z — ข้อดีคือ... ข้อเสียคือ...', personas:['D'], tags:['persona','D'] },
+        { id:15, title:'แนวทางเสนอแบบ I (ใช้เรื่องเล่า)', text:'เล่าเคสลูกค้าที่เคยได้ประโยชน์จากแผนนี้เป็นเรื่องสั้น จะช่วยให้คนประเภท I เข้าใจและเปิดใจ', personas:['I'], tags:['persona','I'] },
+        { id:16, title:'แนวทางเสนอแบบ C (หลักฐาน / ตัวเลข)', text:'แสดงตารางคำนวณ, เปรียบเทียบตัวเลข และอ้างอิงกฎภาษีที่เกี่ยวข้อง เพื่อให้คน C มั่นใจ', personas:['C'], tags:['persona','C'] },
+        { id:17, title:'แนวทางเสนอแบบ S (รักษาความสัมพันธ์)', text:'เน้นความปลอดภัยของแผน การันตีการคุ้มครอง และวิธีการดูแลลูกค้าหลังขาย', personas:['S'], tags:['persona','S'] }
+      ];
+
+      // ---------- Helpers: fuzzy / scoring ----------
+      // simple fuzzy score: checks subsequence and position & token matches
+      function fuzzyScore(text, query){
+        if(!query) return 1;
+        const t = text.toLowerCase();
+        const q = query.toLowerCase().trim();
+        if(t.includes(q)) return 100 + (q.length); // exact contains high score
+        // token match
+        const qTokens = q.split(/\s+/).filter(Boolean);
+        let score = 0;
+        for(const tok of qTokens){
+          if(t.includes(tok)) score += 20 + tok.length;
+          else {
+            // subsequence match (characters appear in order)
+            let i = 0, j = 0;
+            while(i < t.length && j < tok.length){
+              if(t[i] === tok[j]) j++;
+              i++;
+            }
+            if(j === tok.length) score += 10; // subsequence partial
+          }
+        }
+        // fuzzy by Levenshtein small threshold for single word
+        return score;
+      }
+
+      // ---------- UI references ----------
+      const searchInput = document.getElementById('searchInput');
+      const clearSearch = document.getElementById('clearSearch');
+      const resultsEl = document.getElementById('results');
+      const personaChips = document.querySelectorAll('.persona-chip');
       const modeCards = document.querySelectorAll('.mode-card');
+      const sheet = document.getElementById('sheet');
       const panel = document.getElementById('modePanel');
       const panelTitle = document.getElementById('panelTitle');
       const panelContent = document.getElementById('panelContent');
       const closePanelBtn = document.getElementById('closePanel');
-      const sheet = document.getElementById('sheet');
 
-      const sampleScripts = {
-        minimal: {
-          title: 'Minimal Pro Banking',
-          desc: 'คู่มือแบบเป็นขั้นตอน เหมาะสำหรับอธิบายตัวเลขและข้อมูลเชิงเทคนิค',
-          scripts: [
-            {title:'Phase 1: The Hook', text:'สวัสดีครับ/ค่ะ ผมแค่ขอเวลาสั้นๆ เพื่อทบทวนสิทธิ์ลดหย่อนภาษีของคุณ...'},
-            {title:'Phase 2: ประโยชน์', text:'ถ้าลงทุน 100,000 บาท จะได้สิทธิ์ลดหย่อนภาษีสูงสุด X บาท...'},
-            {title:'Phase 3: WOW Summary', text:'สรุปปีแรกได้กลับมา 30,000 บาท (ตัวอย่าง)'}
-          ]
-        },
-        conversation: {
-          title: 'Conversation Studio',
-          desc: 'บทสนทนาแบบ bubble พร้อมประโยคให้พูดทันที ใช้ตอนคุยกับลูกค้า',
-          scripts: [
-            {title:'เปิดบทสนทนา (Hook)', text:'“สวัสดีครับ/ค่ะ คุณ [ชื่อ]...ช่วงปลายปีมีช่องทางช่วยลดภาษีอยู่ครับ อยากให้ผมช่วยเช็กตัวเลขให้มั้ยครับ?”'},
-            {title:'ตอบข้อโต้แย้ง', text:'“เข้าใจครับ แต่ถ้าให้ผมลองคำนวณตามตัวเลขจริง อาจเห็นภาพชัดขึ้นเลยครับ”'}
-          ]
-        },
-        library: {
-          title: 'Card Library',
-          desc: 'หาสคริปต์ตามสถานการณ์ เลือกการ์ดแล้วกดคัดลอกไปใช้',
-          scripts: [
-            {title:'ข้อโต้แย้ง: 10 ปีนานไป', text:'“ผมเข้าใจครับ แต่ลองมองเป็นการกระจายการลงทุน แล้วเราจะเห็นผลระยะยาว…”'},
-            {title:'ข้อโต้แย้ง: ภาษีเต็มแล้ว', text:'“ถ้าภาษีเต็ม ยังมีช่องทางอื่นที่ช่วยได้เล็กน้อย เช่น…”'}
-          ]
+      let selectedPersona = 'all';
+
+      // ---------- Render functions ----------
+      function renderResults(query=''){
+        const q = query.trim();
+        // compute scores
+        const scored = data.map(item=>{
+          const scoreTitle = fuzzyScore(item.title, q);
+          const scoreText = fuzzyScore(item.text, q);
+          const score = scoreTitle * 1.2 + scoreText;
+          return {...item, score};
+        });
+
+        // filter by persona
+        const filtered = scored.filter(item=>{
+          if(selectedPersona === 'all') return true;
+          return item.personas.includes(selectedPersona);
+        });
+
+        // if query provided, sort by score desc else prioritize persona relevance and tag 'hook' etc
+        const sorted = filtered.sort((a,b)=> b.score - a.score || a.id - b.id);
+
+        // show top 20
+        const top = sorted.slice(0, 40);
+
+        // render
+        if(top.length === 0){
+          resultsEl.innerHTML = `<div style="color:var(--text-secondary);padding:12px">ไม่พบสคริปต์ที่ตรงกับคำค้นหรือ persona นี้</div>`;
+          return;
         }
-      };
 
-      function openPanel(modeKey){
-        const mode = sampleScripts[modeKey];
-        if(!mode) return;
-        panelTitle.textContent = mode.title;
-        panelContent.innerHTML = `
-          <div style="color:var(--text-secondary);margin-bottom:10px">${mode.desc}</div>
-          ${mode.scripts.map(s => `
-            <div class="script-block" tabindex="0">
-              <strong>${s.title}</strong>
-              <p>${s.text}</p>
-              <div style="margin-top:10px;display:flex;gap:8px">
-                <button onclick="copyText(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--grad-2),var(--grad-3));color:#fff;cursor:pointer">คัดลอก</button>
-                <button onclick="useScript(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:1px solid var(--divider);background:#fff;cursor:pointer">ใช้เลย</button>
+        resultsEl.innerHTML = top.map(item => {
+          const personaLabels = item.personas.map(p => `<span class="tag">${p}</span>`).join('');
+          // highlight query (simple)
+          let snippet = item.text;
+          if(q){
+            const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'ig');
+            snippet = snippet.replace(re, (m)=>`<strong style="background:linear-gradient(90deg,var(--grad-2),var(--grad-3));color:#fff;padding:2px 4px;border-radius:4px">${m}</strong>`);
+          }
+          return `
+            <div class="result-item" data-id="${item.id}">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h4>${item.title}</h4>
+                <div style="font-size:12px;color:var(--text-secondary)">${item.tags.join(', ')}</div>
+              </div>
+              <div style="margin-bottom:8px">${personaLabels}</div>
+              <p style="color:var(--text-secondary);margin:0 0 8px;">${snippet}</p>
+              <div style="display:flex;gap:8px">
+                <button onclick='copyText(${JSON.stringify(item.text).replace(/"/g,'&quot;')})' style="padding:8px 10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--grad-2),var(--grad-3));color:#fff;cursor:pointer">คัดลอก</button>
+                <button onclick='useScript(${JSON.stringify(item.text).replace(/"/g,'&quot;')})' style="padding:8px 10px;border-radius:10px;border:1px solid var(--divider);background:#fff;cursor:pointer">ใช้เลย</button>
               </div>
             </div>
-          `).join('')}
-        `;
-        panel.classList.add('open');
-        panel.setAttribute('aria-hidden','false');
+          `;
+        }).join('');
       }
 
+      // ---------- Events ----------
+      searchInput.addEventListener('input', (e)=>{
+        const q = e.target.value;
+        renderResults(q);
+      });
+      clearSearch.addEventListener('click', ()=>{
+        searchInput.value = '';
+        renderResults('');
+      });
+
+      // persona chip toggle
+      personaChips.forEach(chip=>{
+        chip.addEventListener('click', ()=>{
+          const p = chip.dataset.persona;
+          if(p === 'all'){
+            selectedPersona = 'all';
+            personaChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+          } else {
+            selectedPersona = (selectedPersona === p ? 'all' : p);
+            personaChips.forEach(c => c.classList.remove('active'));
+            if(selectedPersona !== 'all'){
+              document.querySelector(`.persona-chip[data-persona="${selectedPersona}"]`).classList.add('active');
+            } else {
+              document.querySelector('.persona-chip[data-persona="all"]').classList.add('active');
+            }
+          }
+          renderResults(searchInput.value);
+        });
+      });
+      // init persona all active
+      document.querySelector('.persona-chip[data-persona="all"]').classList.add('active');
+
+      // mode cards open panel
       modeCards.forEach(card=>{
         card.addEventListener('click', ()=> {
           const mode = card.dataset.mode;
           openPanel(mode);
         });
-        card.addEventListener('keydown', (e)=> {
-          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
-        });
       });
 
-      closePanelBtn.addEventListener('click', ()=>{
-        panel.classList.remove('open');
-        panel.setAttribute('aria-hidden','true');
-      });
-
-      // Quick start sheet
-      const chips = document.querySelectorAll('.chip');
-      chips.forEach(c=>{
+      // Quick start chips open sheet
+      document.querySelectorAll('.chip').forEach(c=>{
         c.addEventListener('click', ()=> {
-          // open bottom sheet
           sheet.classList.add('open');
           sheet.setAttribute('aria-hidden','false');
         });
@@ -403,18 +446,36 @@
 
       // sheet actions
       document.querySelectorAll('.sheet-action').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
+        btn.addEventListener('click', ()=>{
           const action = btn.dataset.action;
           sheet.classList.remove('open');
           sheet.setAttribute('aria-hidden','true');
-          // auto open relevant mode panel
           if(action === 'hook') openPanel('conversation');
           else if(action === 'objection') openPanel('library');
           else openPanel('minimal');
         });
       });
 
-      // close sheet on tap outside (simple)
+      // scenario cards open library filtered
+      document.querySelectorAll('.sc-card').forEach(card=>{
+        card.addEventListener('click', ()=>{
+          openPanel('library');
+          // optionally highlight related scripts: we can auto-scroll to ones with matching tags
+          const scenario = card.dataset.scenario;
+          setTimeout(()=> {
+            const el = Array.from(document.querySelectorAll('.script-block')).find(b => b.innerHTML.toLowerCase().includes(scenario));
+            if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+          }, 320);
+        });
+      });
+
+      // panel close
+      closePanelBtn.addEventListener('click', ()=> {
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden','true');
+      });
+
+      // click outside sheet to close
       document.addEventListener('click', (e)=>{
         if(sheet.classList.contains('open')){
           const rect = sheet.getBoundingClientRect();
@@ -425,39 +486,74 @@
         }
       });
 
-      // scenario cards open library mode with filtered content
-      document.querySelectorAll('.sc-card').forEach(card=>{
-        card.addEventListener('click', ()=>{
-          openPanel('library');
-          // optionally, scroll to matched script in panel after open
-        });
-      });
-
-      // bottom nav interactions (example)
+      // bottom nav demo
       document.querySelectorAll('.nav-item').forEach(item=>{
         item.addEventListener('click', ()=>{
           document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
           item.classList.add('active');
-          // can route to sections; for now, focus home
-          if(item.dataset.nav === 'contact') alert('ติดต่อเทรนนิ่ง / ส่งอีเมลตัวอย่าง (demo)');
-          if(item.dataset.nav === 'version') alert('เวอร์ชันระบบ: prototype');
+          if(item.dataset.nav === 'contact') alert('ติดต่อทีมเทรนนิ่ง (demo)');
+          else if(item.dataset.nav === 'version') alert('เวอร์ชัน: prototype');
         });
       });
 
-      // small global helpers exposed
+      // ---------- Panel open implementation ----------
+      function openPanel(modeKey){
+        let mode = { title:'', desc:'', scripts:[] };
+        if(modeKey === 'minimal') mode = {
+          title:'Minimal Pro Banking',
+          desc:'คู่มือแบบเป็นขั้นตอน เหมาะสำหรับอธิบายตัวเลขและข้อมูลเชิงเทคนิค',
+          scripts: data.filter(d=>d.tags.includes('tax') || d.tags.includes('numbers') || d.tags.includes('persona')).slice(0,8)
+        };
+        if(modeKey === 'conversation') mode = {
+          title:'Conversation Studio',
+          desc:'บทสนทนาแบบ bubble พร้อมประโยคให้พูดทันที ใช้ตอนคุยกับลูกค้า',
+          scripts: data.filter(d=>d.tags.includes('hook') || d.tags.includes('objection') || d.tags.includes('close')).slice(0,10)
+        };
+        if(modeKey === 'library') mode = {
+          title:'Card Library',
+          desc:'หาสคริปต์ตามสถานการณ์ เลือกการ์ดแล้วกดคัดลอกไปใช้',
+          scripts: data.slice(0,50)
+        };
+
+        panelTitle.textContent = mode.title;
+        panelContent.innerHTML = `<div style="color:var(--text-secondary);margin-bottom:10px">${mode.desc}</div>` +
+          mode.scripts.map(s => `
+            <div class="script-block" tabindex="0" data-id="${s.id}">
+              <strong>${s.title}</strong>
+              <div style="margin:8px 0;color:var(--text-secondary)">${s.personas.map(p=>`<span class="tag">${p}</span>`).join('')}</div>
+              <p>${s.text}</p>
+              <div style="margin-top:10px;display:flex;gap:8px">
+                <button onclick="copyText(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--grad-2),var(--grad-3));color:#fff;cursor:pointer">คัดลอก</button>
+                <button onclick="useScript(${JSON.stringify(s.text).replace(/"/g,'&quot;')})" style="padding:8px 10px;border-radius:10px;border:1px solid var(--divider);background:#fff;cursor:pointer">ใช้เลย</button>
+              </div>
+            </div>
+          `).join('');
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden','false');
+      }
+
+      // ---------- Copy / Use helpers ----------
       window.copyText = function(text){
         navigator.clipboard?.writeText(text).then(()=> {
           alert('คัดลอกสคริปต์เรียบร้อย');
-        }).catch(()=> alert('ไม่สามารถคัดลอกได้'));
+        }).catch(()=> {
+          // fallback
+          const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+          try{ document.execCommand('copy'); alert('คัดลอกสคริปต์เรียบร้อย'); }catch(e){ alert('ไม่สามารถคัดลอกได้'); }
+          ta.remove();
+        });
       };
+
       window.useScript = function(text){
-        // example: paste to clipboard and show a friendly hint
         navigator.clipboard?.writeText(text).then(()=> {
-          alert('วางสคริปต์ลงในช่องแช็ตของคุณได้เลย (คัดลอกเรียบร้อย)');
+          alert('คัดลอกสคริปต์เรียบร้อย — วางลงในช่องสนทนาหรือแอปของคุณได้เลย');
         }).catch(()=> alert('ไม่สามารถคัดลอกได้'));
       };
 
-      // keyboard accessibility: Escape closes panel/sheet
+      // ---------- Init render ----------
+      renderResults('');
+
+      // Accessibility: Escape to close panel/sheet
       document.addEventListener('keydown', (e)=> {
         if(e.key === 'Escape'){
           if(panel.classList.contains('open')) { panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); }
